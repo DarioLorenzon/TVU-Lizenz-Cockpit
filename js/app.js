@@ -96,6 +96,8 @@ function compare() {
 
     result = compareData(members, licences);
 
+    updateDashboard(result);
+
     console.clear();
 
     console.log("=================================");

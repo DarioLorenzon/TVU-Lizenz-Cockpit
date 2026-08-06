@@ -1,59 +1,167 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>TVU Lizenz-Cockpit</title>
 
     <link rel="stylesheet" href="css/style.css">
 
     <!-- SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>🏐 TVU Lizenz-Cockpit</h1>
-    <p class="subtitle">
-        Vergleich zwischen Mitgliederverwaltung und SHV-Lizenzen
-    </p>
+        <h1>🏐 TVU Lizenz-Cockpit</h1>
 
-    <div class="card">
+        <p class="subtitle">
+            Vergleich zwischen Mitgliederverwaltung und SHV-Lizenzen
+        </p>
 
-        <label>Mitgliederverwaltung</label>
-        <input type="file" id="membersFile" accept=".xlsx,.xls">
+        <!-- ===========================
+             Dateien auswählen
+        ============================ -->
 
-        <label>Lizenzen</label>
-        <input type="file" id="licensesFile" accept=".xlsx,.xls">
+        <div class="card">
 
-        <button id="compareBtn">
-            Vergleichen
-        </button>
+            <label>Mitgliederverwaltung</label>
+            <input type="file" id="membersFile" accept=".xlsx,.xls">
+
+            <label>Archivierte Mitglieder</label>
+            <input type="file" id="archiveFile" accept=".xlsx,.xls">
+
+            <label>SHV-Lizenzen</label>
+            <input type="file" id="licensesFile" accept=".xlsx,.xls">
+
+            <button id="compareBtn">
+                Vergleichen
+            </button>
+
+        </div>
+
+        <!-- ===========================
+             Status
+        ============================ -->
+
+        <div class="status">
+
+            <div>
+
+                Mitglieder:
+
+                <span id="memberCount">0</span>
+
+            </div>
+
+            <div>
+
+                Lizenzen:
+
+                <span id="licenseCount">0</span>
+
+            </div>
+
+        </div>
+
+        <!-- ===========================
+             Dashboard
+        ============================ -->
+
+        <div class="dashboard">
+
+            <div class="tile">
+
+                <div class="tileTitle">
+
+                    ✅ Vorhanden
+
+                </div>
+
+                <div
+                    class="tileValue"
+                    id="countFound">
+
+                    0
+
+                </div>
+
+            </div>
+
+            <div class="tile">
+
+                <div class="tileTitle">
+
+                    ➕ Erstellen
+
+                </div>
+
+                <div
+                    class="tileValue"
+                    id="countCreate">
+
+                    0
+
+                </div>
+
+            </div>
+
+            <div class="tile">
+
+                <div class="tileTitle">
+
+                    ❌ Löschen
+
+                </div>
+
+                <div
+                    class="tileValue"
+                    id="countDelete">
+
+                    0
+
+                </div>
+
+            </div>
+
+            <div class="tile">
+
+                <div class="tileTitle">
+
+                    ⚠ Prüfen
+
+                </div>
+
+                <div
+                    class="tileValue"
+                    id="countReview">
+
+                    0
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <div class="status">
+    <!-- ===========================
+         JavaScript
+    ============================ -->
 
-        <div>
-            Mitglieder:
-            <span id="memberCount">0</span>
-        </div>
-
-        <div>
-            Lizenzen:
-            <span id="licenseCount">0</span>
-        </div>
-
-    </div>
-
-</div>
-
-<script src="js/utils.js"></script>
-<script src="js/excel.js"></script>
-<script src="js/compare.js"></script>
-<script src="js/app.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/excel.js"></script>
+    <script src="js/compare.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
 
 </body>
+
 </html>
