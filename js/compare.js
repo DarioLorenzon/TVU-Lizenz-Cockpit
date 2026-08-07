@@ -1,7 +1,7 @@
 // ======================================
 // TVU Lizenz-Cockpit
 // compare.js
-// Version 1.2.0
+// Version 1.3.0
 // ======================================
 
 "use strict";
@@ -28,12 +28,14 @@ function compareData(members, archive, licences) {
         ),
 
         loeschen: findArchivedLicences(
+            members,
             archive,
             licenceMap
         ),
 
         pruefen: findUnknownLicences(
             licences,
+            members,
             memberMap,
             archiveMap
         )
@@ -45,10 +47,14 @@ function compareData(members, archive, licences) {
 /**
  * =====================================
  * Keine Aktion
+ *
  * Mitglied aktiv + Lizenz vorhanden
  * =====================================
  */
-function findExistingLicences(members, licenceMap) {
+function findExistingLicences(
+    members,
+    licenceMap
+) {
 
     const result = [];
 
@@ -78,10 +84,14 @@ function findExistingLicences(members, licenceMap) {
 /**
  * =====================================
  * Lizenz erstellen
+ *
  * Mitglied aktiv + keine Lizenz
  * =====================================
  */
-function findMissingLicences(members, licenceMap) {
+function findMissingLicences(
+    members,
+    licenceMap
+) {
 
     const result = [];
 
@@ -101,14 +111,28 @@ function findMissingLicences(members, licenceMap) {
 /**
  * =====================================
  * Lizenz löschen
+ *
  * Archiviert + Lizenz vorhanden
+ *
+ * Ausnahme:
+ * Aktive Mitglieder haben Vorrang.
  * =====================================
  */
-function findArchivedLicences(archive, licenceMap) {
+function findArchivedLicences(
+    members,
+    archive,
+    licenceMap
+) {
 
     const result = [];
 
+    const memberMap = createMap(members);
+
     for (const person of archive) {
+
+        // Aktiv schlägt Archiv
+        if (memberMap.has(person.id))
+            continue;
 
         const licence = licenceMap.get(person.id);
 
@@ -135,10 +159,14 @@ function findArchivedLicences(archive, licenceMap) {
  * Lizenz vorhanden
  * Nicht aktiv
  * Nicht archiviert
+ *
+ * Zusätzlich wird ein möglicher Treffer
+ * in der Mitgliederverwaltung gesucht.
  * =====================================
  */
 function findUnknownLicences(
     licences,
+    members,
     memberMap,
     archiveMap
 ) {
@@ -153,7 +181,17 @@ function findUnknownLicences(
         if (archiveMap.has(licence.id))
             continue;
 
-        result.push(licence);
+        const match = findPossibleMatch(
+            licence,
+            members
+        );
+
+        result.push({
+
+            licence,
+            match
+
+        });
 
     }
 

@@ -1,7 +1,7 @@
 // ======================================
 // TVU Lizenz-Cockpit
 // export.js
-// Version 1.1.0
+// Version 1.2.0
 // ======================================
 
 "use strict";
@@ -28,7 +28,10 @@ function createWorklist(result) {
             Team: "",
             Lizenz: item.licence.lizenz,
             Austrittsdatum: item.archive.austritt,
-            Bemerkung: "Mitglied archiviert"
+            Bemerkung: "Mitglied archiviert",
+
+            MöglicherTreffer: "",
+            Grund: ""
 
         });
 
@@ -49,7 +52,10 @@ function createWorklist(result) {
             Team: member.team,
             Lizenz: "",
             Austrittsdatum: "",
-            Bemerkung: "Keine Lizenz vorhanden"
+            Bemerkung: "Keine Lizenz vorhanden",
+
+            MöglicherTreffer: "",
+            Grund: ""
 
         });
 
@@ -59,19 +65,39 @@ function createWorklist(result) {
     // Abklären
     // ----------------------------------
 
-    for (const licence of result.pruefen) {
+    for (const item of result.pruefen) {
+
+        let moeglicherTreffer = "";
+        let grund = "";
+
+        if (item.match) {
+
+            moeglicherTreffer =
+                item.match.person.nachname +
+                ", " +
+                item.match.person.vorname +
+                " (" +
+                item.match.person.geburt +
+                ")";
+
+            grund = item.match.reason;
+
+        }
 
         worklist.push({
 
             Aktion: "Abklären",
-            Name: licence.nachname,
-            Vorname: licence.vorname,
-            Geburt: licence.geburt,
+            Name: item.licence.nachname,
+            Vorname: item.licence.vorname,
+            Geburt: item.licence.geburt,
             Team: "",
-            Lizenz: licence.lizenz,
+            Lizenz: item.licence.lizenz,
             Austrittsdatum: "",
             Bemerkung:
-                "Lizenz vorhanden, aber weder aktiv noch archiviert"
+                "Lizenz vorhanden, aber weder aktiv noch archiviert",
+
+            MöglicherTreffer: moeglicherTreffer,
+            Grund: grund
 
         });
 
@@ -91,7 +117,7 @@ function exportExcel(result) {
     const workbook = XLSX.utils.book_new();
 
     // ----------------------------------
-    // Titelzeile
+    // Titel
     // ----------------------------------
 
     const today = new Date();
@@ -107,6 +133,7 @@ function exportExcel(result) {
         ["Arbeitsliste"],
         ["Erstellt am", dateString],
         [],
+
         [
             "Aktion",
             "Name",
@@ -115,12 +142,16 @@ function exportExcel(result) {
             "Team",
             "Lizenz",
             "Austrittsdatum",
-            "Bemerkung"
+            "Bemerkung",
+            "Möglicher Treffer",
+            "Grund"
         ]
 
     ];
 
-    // Daten anhängen
+    // ----------------------------------
+    // Daten
+    // ----------------------------------
 
     worklist.forEach(item => {
 
@@ -133,14 +164,15 @@ function exportExcel(result) {
             item.Team,
             item.Lizenz,
             item.Austrittsdatum,
-            item.Bemerkung
+            item.Bemerkung,
+            item.MöglicherTreffer,
+            item.Grund
 
         ]);
 
     });
 
-    const worksheet =
-        XLSX.utils.aoa_to_sheet(sheetData);
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
 
     // ----------------------------------
     // Autofilter
@@ -148,7 +180,7 @@ function exportExcel(result) {
 
     worksheet["!autofilter"] = {
 
-        ref: "A5:H" + sheetData.length
+        ref: "A5:J" + sheetData.length
 
     };
 
@@ -169,14 +201,16 @@ function exportExcel(result) {
 
     worksheet["!cols"] = [
 
-        { wch: 18 },
-        { wch: 22 },
-        { wch: 22 },
-        { wch: 14 },
-        { wch: 12 },
-        { wch: 15 },
-        { wch: 18 },
-        { wch: 45 }
+        { wch: 18 }, // Aktion
+        { wch: 22 }, // Name
+        { wch: 22 }, // Vorname
+        { wch: 14 }, // Geburt
+        { wch: 14 }, // Team
+        { wch: 14 }, // Lizenz
+        { wch: 18 }, // Austrittsdatum
+        { wch: 45 }, // Bemerkung
+        { wch: 35 }, // Möglicher Treffer
+        { wch: 30 }  // Grund
 
     ];
 

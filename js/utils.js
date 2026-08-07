@@ -89,14 +89,19 @@ function normalizeBirth(value) {
 /**
  * Primärschlüssel erzeugen.
  *
- * Geburt + Nachname
+ * Geburt + Nachname + erster Vorname
+ *
+ * Dadurch werden Zwillinge oder Personen mit
+ * gleichem Nachnamen und Geburtsdatum eindeutig.
  */
 function createPersonId(person) {
 
     return (
         normalizeBirth(person.geburt) +
         "|" +
-        normalizeName(person.nachname)
+        normalizeName(person.nachname) +
+        "|" +
+        firstFirstname(person.vorname)
     );
 
 }
