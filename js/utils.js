@@ -1,7 +1,7 @@
 // ======================================
 // TVU Lizenz-Cockpit
 // utils.js
-// Version 1.0.0
+// Version 1.2.0
 // ======================================
 
 "use strict";
@@ -10,7 +10,9 @@
  * Führende und nachfolgende Leerzeichen entfernen.
  */
 function clean(value) {
+
     return String(value ?? "").trim();
+
 }
 
 /**
@@ -46,32 +48,38 @@ function normalizeName(value) {
         .replace(/'/g, "")
         .replace(/`/g, "")
 
-        // mehrere Leerzeichen
+        // Mehrfach-Leerzeichen
         .replace(/\s+/g, " ")
 
         .trim();
+
 }
 
 /**
  * Geburtsdatum normalisieren.
  *
- * Aktuell bleibt das Format TT.MM.JJJJ erhalten.
+ * Ausgabe:
+ * TT.MM.JJJJ
  */
 function normalizeBirth(value) {
 
     if (value === null || value === undefined || value === "")
         return "";
 
-    // Excel-Datum (Seriennummer)
+    // Excel-Seriennummer
     if (typeof value === "number") {
 
         const date = XLSX.SSF.parse_date_code(value);
+
+        if (!date)
+            return "";
 
         const day = String(date.d).padStart(2, "0");
         const month = String(date.m).padStart(2, "0");
         const year = String(date.y);
 
         return `${day}.${month}.${year}`;
+
     }
 
     return clean(value);
@@ -79,31 +87,26 @@ function normalizeBirth(value) {
 }
 
 /**
- * ID erzeugen
+ * Primärschlüssel erzeugen.
  *
- * Primärschlüssel:
  * Geburt + Nachname
  */
 function createPersonId(person) {
 
-    return normalizeBirth(person.geburt)
-        + "|"
-        + normalizeName(person.nachname);
+    return (
+        normalizeBirth(person.geburt) +
+        "|" +
+        normalizeName(person.nachname)
+    );
 
 }
 
 /**
- * Zwei Vornamen vergleichen.
+ * Ersten Vornamen zurückgeben.
  *
  * Beispiele:
- *
- * "Sophia Jasmin"
- * =
- * "Sophia"
- *
- * "Frederik Finn"
- * =
- * "Frederik"
+ * "Sophia Jasmin" → "sophia"
+ * "Frederik Finn" → "frederik"
  */
 function firstFirstname(value) {
 
@@ -114,7 +117,7 @@ function firstFirstname(value) {
 }
 
 /**
- * Prüfen ob zwei Vornamen zusammenpassen.
+ * Vornamen vergleichen.
  */
 function firstnamesEqual(a, b) {
 
@@ -137,22 +140,53 @@ function surnamesEqual(a, b) {
 function fullnamesEqual(personA, personB) {
 
     return (
-        surnamesEqual(personA.nachname, personB.nachname)
-        &&
+        surnamesEqual(personA.nachname, personB.nachname) &&
         firstnamesEqual(personA.vorname, personB.vorname)
     );
 
 }
 
 /**
- * Zeitstempel
+ * Array anhand der Person-ID in eine Map umwandeln.
+ *
+ * map.get(person.id)
+ */
+function createMap(list) {
+
+    const map = new Map();
+
+    for (const item of list) {
+
+        map.set(item.id, item);
+
+    }
+
+    return map;
+
+}
+
+/**
+ * Datum formatieren.
+ *
+ * Platzhalter für spätere Erweiterungen.
+ */
+function formatDate(value) {
+
+    return normalizeBirth(value);
+
+}
+
+/**
+ * Aktuelle Uhrzeit.
  */
 function now() {
 
     return new Date().toLocaleTimeString("de-CH", {
+
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit"
+
     });
 
 }

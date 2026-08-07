@@ -25,36 +25,66 @@
             Vergleich zwischen Mitgliederverwaltung und SHV-Lizenzen
         </p>
 
-        <!-- ===========================
+        <!-- ==========================================
              Dateien auswählen
-        ============================ -->
+        =========================================== -->
 
         <div class="card">
 
-            <label>Mitgliederverwaltung</label>
-            <input type="file" id="membersFile" accept=".xlsx,.xls">
+            <label for="membersFile">
+                Mitgliederverwaltung
+            </label>
 
-            <label>Archivierte Mitglieder</label>
-            <input type="file" id="archiveFile" accept=".xlsx,.xls">
+            <input
+                type="file"
+                id="membersFile"
+                accept=".xlsx,.xls">
 
-            <label>SHV-Lizenzen</label>
-            <input type="file" id="licensesFile" accept=".xlsx,.xls">
+            <label for="archiveFile">
+                Archivierte Mitglieder
+            </label>
 
-            <button id="compareBtn">
-                Vergleichen
-            </button>
+            <input
+                type="file"
+                id="archiveFile"
+                accept=".xlsx,.xls">
+
+            <label for="licensesFile">
+                SHV-Lizenzen
+            </label>
+
+            <input
+                type="file"
+                id="licensesFile"
+                accept=".xlsx,.xls">
+
+            <div class="buttonBar">
+
+                <button id="compareBtn">
+                    🔍 Vergleichen
+                </button>
+
+                <button
+                    id="exportBtn"
+                    style="display:none">
+
+                    📤 Excel-Bericht erstellen
+
+                </button>
+
+            </div>
 
         </div>
 
-        <!-- ===========================
+        <!-- ==========================================
              Status
-        ============================ -->
+        =========================================== -->
 
         <div class="status">
 
             <div>
 
-                Mitglieder:
+                Mitglieder
 
                 <span id="memberCount">0</span>
 
@@ -62,7 +92,15 @@
 
             <div>
 
-                Lizenzen:
+                Archiv
+
+                <span id="archiveCount">0</span>
+
+            </div>
+
+            <div>
+
+                Lizenzen
 
                 <span id="licenseCount">0</span>
 
@@ -70,18 +108,16 @@
 
         </div>
 
-        <!-- ===========================
+        <!-- ==========================================
              Dashboard
-        ============================ -->
+        =========================================== -->
 
         <div class="dashboard">
 
             <div class="tile">
 
                 <div class="tileTitle">
-
-                    ✅ Vorhanden
-
+                    ✅ Keine Aktion
                 </div>
 
                 <div
@@ -97,9 +133,7 @@
             <div class="tile">
 
                 <div class="tileTitle">
-
-                    ➕ Erstellen
-
+                    ➕ Lizenz erstellen
                 </div>
 
                 <div
@@ -115,9 +149,7 @@
             <div class="tile">
 
                 <div class="tileTitle">
-
-                    ❌ Löschen
-
+                    ❌ Lizenz löschen
                 </div>
 
                 <div
@@ -133,9 +165,7 @@
             <div class="tile">
 
                 <div class="tileTitle">
-
-                    ⚠ Prüfen
-
+                    ⚠️ Abklären
                 </div>
 
                 <div
@@ -150,15 +180,40 @@
 
         </div>
 
+        <!-- ==========================================
+             Statusmeldung
+        =========================================== -->
+
+        <div
+            id="messageBox"
+            class="results"
+            style="display:none;">
+
+            <p id="messageText"></p>
+
+        </div>
+
+        <!-- ==========================================
+             Version
+        =========================================== -->
+
+        <footer class="footer">
+
+            TVU Lizenz-Cockpit · Version 1.5.0
+
+        </footer>
+
     </div>
 
-    <!-- ===========================
+    <!-- ==========================================
          JavaScript
-    ============================ -->
+    =========================================== -->
 
     <script src="js/utils.js"></script>
+    <script src="js/validation.js"></script>
     <script src="js/excel.js"></script>
     <script src="js/compare.js"></script>
+    <script src="js/export.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 

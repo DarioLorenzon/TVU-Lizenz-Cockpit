@@ -1,7 +1,7 @@
 // ======================================
 // TVU Lizenz-Cockpit
 // excel.js
-// Version 1.0.0
+// Version 1.2.0
 // ======================================
 
 "use strict";
@@ -9,95 +9,116 @@
 /**
  * Excel-Datei einlesen
  */
-function readExcel(file) {
+async function readExcel(file) {
 
-    return new Promise((resolve, reject) => {
+    const buffer = await file.arrayBuffer();
 
-        const reader = new FileReader();
+    const workbook = XLSX.read(buffer, {
+        type: "array"
+    });
 
-        reader.onload = function (event) {
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-            try {
-
-                const data = new Uint8Array(event.target.result);
-
-                const workbook = XLSX.read(data, {
-                    type: "array"
-                });
-
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-
-                const rows = XLSX.utils.sheet_to_json(sheet, {
-                    defval: ""
-                });
-
-                resolve(rows);
-
-            } catch (error) {
-
-                reject(error);
-
-            }
-
-        };
-
-        reader.onerror = reject;
-
-        reader.readAsArrayBuffer(file);
-
+    return XLSX.utils.sheet_to_json(sheet, {
+        defval: ""
     });
 
 }
 
-
 /**
- * Mitglieder normalisieren
+ * Mitglieder umwandeln
  */
 function convertMembers(rows) {
 
-    return rows.map(row => {
-
-        const person = {
-
-            nachname: clean(row.Name),
-            vorname: clean(row.Vorname),
-            geburt: normalizeBirth(row.Geburt),
-            team: clean(row.Team),
-            info: clean(row.Info)
-
-        };
-
-        person.id = createPersonId(person);
-
-        return person;
-
-    });
+    return rows.map(row => createPerson(row, "member"));
 
 }
 
+/**
+ * Archiv umwandeln
+ */
+function convertArchive(rows) {
+
+    return rows.map(row => createPerson(row, "archive"));
+
+}
 
 /**
- * Lizenzen normalisieren
+ * Lizenzen umwandeln
  */
 function convertLicences(rows) {
 
-    return rows.map(row => {
+    return rows.map(row => createPerson(row, "licence"));
 
-        const person = {
+}
 
-            nachname: clean(row.Name),
-            vorname: clean(row.Vorname),
-            geburt: normalizeBirth(row.Geburt),
-            lizenz: clean(row.Lizenz)
+/**
+ * Einheitliches Personenobjekt erzeugen
+ */
+function createPerson(row, source) {
 
-        };
+    const person = {
 
-        person.id = createPersonId(person);
+        nachname: "",
+        vorname: "",
+        geburt: "",
 
-        console.log(person);
+        team: "",
+        info: "",
 
-        return person;
+        lizenz: "",
 
-    });
+        austritt: "",
+
+        source: source,
+
+        id: "",
+        fullId: ""
+
+    };
+
+    switch (source) {
+
+        case "member":
+
+            person.nachname = clean(row.Name);
+            person.vorname = clean(row.Vorname);
+            person.geburt = normalizeBirth(row.Geburt);
+
+            person.team = clean(row.Team);
+            person.info = clean(row.Info);
+
+            break;
+
+        case "archive":
+
+            person.nachname = clean(row.Name);
+            person.vorname = clean(row.Vorname);
+            person.geburt = normalizeBirth(row.Geburt);
+
+            person.austritt = normalizeBirth(row.Austrittsdatum);
+
+            break;
+
+        case "licence":
+
+            person.nachname = clean(row.Name);
+            person.vorname = clean(row.Vorname);
+            person.geburt = normalizeBirth(row.Geburt);
+
+            person.lizenz = clean(row.Lizenz);
+
+            break;
+
+    }
+
+    person.id = createPersonId(person);
+
+    person.fullId =
+        person.id +
+        "|" +
+        normalizeName(person.vorname);
+
+    return person;
 
 }
