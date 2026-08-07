@@ -1,7 +1,7 @@
 /* ======================================
    TVU Lizenz-Cockpit
    style.css
-   Version 1.1.0
+   Version 1.2.0
 ====================================== */
 
 * {
@@ -14,6 +14,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #f4f6fb;
     color: #222;
+    line-height: 1.5;
 }
 
 .container {
@@ -21,6 +22,10 @@ body {
     margin: 40px auto;
     padding: 20px;
 }
+
+/* ======================================
+   Titel
+====================================== */
 
 h1 {
     margin-bottom: 10px;
@@ -32,11 +37,21 @@ h1 {
     margin-bottom: 30px;
 }
 
-.card {
+/* ======================================
+   Karten
+====================================== */
+
+.card,
+.status,
+.tile,
+.results {
     background: white;
     border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .08);
+}
+
+.card {
     padding: 30px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.08);
 }
 
 .card label {
@@ -48,51 +63,80 @@ h1 {
 
 .card input[type=file] {
     width: 100%;
+    padding: 6px;
+}
+
+/* ======================================
+   Buttons
+====================================== */
+
+.buttonBar {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+.buttonBar button {
+    flex: 1;
 }
 
 button {
-    margin-top: 35px;
-    width: 100%;
     padding: 15px;
     border: none;
     border-radius: 8px;
     background: #1565c0;
     color: white;
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background .2s ease;
 }
 
 button:hover {
     background: #0d47a1;
 }
 
+/* ======================================
+   Status
+====================================== */
+
 .status {
     margin-top: 25px;
-    background: white;
-    border-radius: 12px;
     padding: 20px;
     display: flex;
     justify-content: space-around;
-    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    text-align: center;
 }
+
+.status div {
+    font-weight: bold;
+}
+
+.status span {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+    color: #1565c0;
+}
+
+/* ======================================
+   Dashboard
+====================================== */
 
 .dashboard {
     margin-top: 25px;
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
 .tile {
-    background: white;
-    border-radius: 12px;
     padding: 25px;
     text-align: center;
-    box-shadow: 0 3px 12px rgba(0,0,0,.08);
 }
 
 .tileTitle {
-    font-size: 18px;
+    font-size: 17px;
     margin-bottom: 15px;
     color: #555;
 }
@@ -100,24 +144,79 @@ button:hover {
 .tileValue {
     font-size: 42px;
     font-weight: bold;
+    color: #1565c0;
 }
 
-@media (max-width:900px){
+/* ======================================
+   Ergebnisse
+====================================== */
 
-    .dashboard{
+.results {
+    margin-top: 25px;
+    padding: 25px;
+    min-height: 120px;
+}
 
-        grid-template-columns:repeat(2,1fr);
+.placeholder {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
 
+/* ======================================
+   Footer
+====================================== */
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+}
+
+/* ======================================
+   Hilfsklassen
+====================================== */
+
+.hidden {
+    display: none !important;
+}
+
+
+
+/* ======================================
+   Responsive
+====================================== */
+
+@media (max-width: 900px) {
+
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
     }
 
 }
 
-@media (max-width:600px){
+@media (max-width: 700px) {
 
-    .dashboard{
+    .status {
+        flex-direction: column;
+        gap: 20px;
+    }
 
-        grid-template-columns:1fr;
+    .buttonBar {
+        flex-direction: column;
+    }
 
+}
+
+@media (max-width: 600px) {
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 30px;
     }
 
 }
